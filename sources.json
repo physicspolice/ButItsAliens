@@ -1,0 +1,14 @@
+{
+	"World Heritage Sites": "http://whc.unesco.org/en/list/xls",
+	"Earthquakes": "https://www.ngdc.noaa.gov/nndc/struts/form?t=101650&s=1&d=1",
+	"Volcanoes": "http://volcano.oregonstate.edu/oldroot/volcanoes/alpha.html",
+	"Impact Craters": "http://www.passc.net/EarthImpactDatabase/Worldmap.html",
+	"Islands": "http://islands.unep.ch/Iindex.htm",
+	"Starbucks": "https://opendata.socrata.com/dataset/xy4y-c4mk",
+	"Countries": "https://opendata.socrata.com/dataset/mnkm-8ram",
+	"Lakes": "http://wldb.ilec.or.jp/LakeNameSearch.asp",
+	"Cathedrals": "https://en.wikipedia.org/wiki/Lists_of_cathedrals",
+	"Crop Circles": "http://cropcirclesdatabase.com/",
+	"Nuclear Reactors": "https://en.wikipedia.org/wiki/List_of_nuclear_reactors",
+	"Archeological Sites": "https://en.wikipedia.org/wiki/List_of_archaeological_sites_by_country"
+}

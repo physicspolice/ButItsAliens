@@ -1,0 +1,12 @@
+Original drivel
+http://www.qwaym.com/circles-connecting-civilizations/
+https://www.youtube.com/watch?v=eVwaftPSRd0
+https://againstjebelallawz.wordpress.com/2013/08/21/equator/
+https://grahamhancock.com/geographic-geometric-relationships-alisonj/
+
+Math
+http://www.movable-type.co.uk/scripts/latlong.html
+http://stackoverflow.com/questions/1051723/distance-from-point-to-line-great-circle-function-not-working-right
+
+Maps API
+https://developers.google.com/maps/documentation/javascript/examples/polyline-simple
