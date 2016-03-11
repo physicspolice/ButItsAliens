@@ -1,39 +1,68 @@
-$(document).ready(function()
+var map;
+var markers = [];
+var equator;
+
+function initialize()
 {
-	$google.maps.event.addDomListener(window, 'load', function()
+	console.log('initialize');
+	if(!map)
 	{
-		var map = new google.maps.Map(document.getElementById('map'), {
+		map = new google.maps.Map(document.getElementById('map'), {
 			'zoom': 3,
 			'center': { 'lat': 0, 'lng': -180 },
 			'mapTypeId': google.maps.MapTypeId.TERRAIN
 		});
-		$.ajax({
-			'url': 'library.json',
-			'type': 'GET',
-			'dataType': 'json',
-			'success': function(response)
+	}
+	if(markers)
+	{
+		for(var i = 0; i < markers.length; i++)
+			markers[i].setMap(null);
+		markers = [];
+	}
+	if(equator)
+	{
+		equator.setMap(null);
+		equator = null;
+	}
+
+	$.ajax({
+		'url': 'data/' + Math.floor((Math.random() * 5) + 1) + '.json',
+		'type': 'GET',
+		'dataType': 'json',
+		'success': function(response)
+		{
+			var points = [];
+			for(var i in response.points)
 			{
-				var link = $('<a />').text(response.url).attr('href', response.url);
-				$('footer p').html(link);
-				$('h3').text(response.name);
-				var equator = new google.maps.Polyline({
-					'path': response.equator,
-					'geodesic': true,
-					'strokeColor': '#FF0000',
-					'strokeOpacity': 1.0,
-					'strokeWeight': 2
-				});
-				equator.setMap(map);
-				for(var i in response.points)
-				{
-					var point = response.points[i];
-					var marker = new google.maps.Marker({
-						'position': point.location,
-						'map': map,
-						'title': point.name
-					});
-				}
+				var p = response.points[i];
+				points.push({'name': p[0], 'lat': p[1], 'lng': p[2]});
 			}
-		});
+			var link = $('<a />').text(response.url).attr('href', response.url);
+			$('footer p').html(link);
+			$('h3').text(response.name);
+			equator = new google.maps.Polyline({
+				'path': points,
+				'geodesic': true,
+				'strokeColor': '#FF0000',
+				'strokeOpacity': 1.0,
+				'strokeWeight': 2
+			});
+			equator.setMap(map);
+			for(var i in points)
+			{
+				var point = points[i];
+				var marker = new google.maps.Marker({
+					'position': point,
+					'map': map,
+					'title': point.name
+				});
+				markers.push(marker);
+			}
+		}
 	});
+}
+
+$(document).ready(function()
+{
+	$('button').click(initialize);
 });
