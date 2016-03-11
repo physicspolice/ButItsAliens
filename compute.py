@@ -42,42 +42,45 @@ def save(name, url, start, finish, points):
 		}))
 save.id = 0
 
-with open('sources.json') as file:
-	sources = loads(file.read())
-for name, url in sources.iteritems():
-	path = join('sources', name.lower().replace(' ', '-') + '.csv')
-	if not exists(path):
-		print('Missing source file: %s' % path)
-		continue
-	print('Loading source file: %s' % path)
-	with open(path) as file:
-		csv = reader(file)
-		csv.next() # Skip header row.
-		points = []
-		for row in csv:
-			row[1] = float(row[1])
-			row[2] = float(row[2])
-			points.append(row)
-		last_point = len(points) - 1
-		progress_time = 0
-		progress_max = last_point * (last_point / 2)
-		progress = 0
-		for i in range(0, last_point - 1):
-			for j in range(i + 1, last_point):
-				start = points[i][1:]
-				finish = points[j][1:]
-				matches = []
-				progress += 1
-				if time() > progress_time:
-					print('  Sharpshooting %d of %d (%0.2f%%)' % (
-						progress,
-						progress_max,
-						100.0 * progress / progress_max
-					), end='\r')
-					stdout.flush()
-					progress_time = time()
-				for i, p in enumerate(points):
-					if cross_track_distance(start, finish, p[1:]) <= D:
-						matches.append(p)
-				if len(matches) >= N:
-					save(name, url, start, finish, matches)
+try:
+	with open('sources.json') as file:
+		sources = loads(file.read())
+	for name, url in sources.iteritems():
+		path = join('sources', name.lower().replace(' ', '-') + '.csv')
+		if not exists(path):
+			print('Missing source file: %s' % path)
+			continue
+		print('Loading source file: %s' % path)
+		with open(path, 'rU') as file:
+			csv = reader(file)
+			csv.next() # Skip header row.
+			points = []
+			for row in csv:
+				row[1] = float(row[1])
+				row[2] = float(row[2])
+				points.append(row)
+			last_point = len(points) - 1
+			progress_time = 0
+			progress_max = last_point * (last_point / 2)
+			progress = 0
+			for i in range(0, last_point - 1):
+				for j in range(i + 1, last_point):
+					start = points[i][1:]
+					finish = points[j][1:]
+					matches = []
+					progress += 1
+					if time() > progress_time:
+						print('  Sharpshooting %d of %d (%0.2f%%)' % (
+							progress,
+							progress_max,
+							100.0 * progress / progress_max
+						), end='\r')
+						stdout.flush()
+						progress_time = time()
+					for i, p in enumerate(points):
+						if cross_track_distance(start, finish, p[1:]) <= D:
+							matches.append(p)
+					if len(matches) >= N:
+						save(name, url, start, finish, matches)
+except KeyboardInterrupt:
+	pass
