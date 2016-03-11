@@ -7,16 +7,12 @@ from csv import reader
 from geographiclib.geodesic import Geodesic
 from geographiclib.constants import Constants
 
-def sharpshooter(points):
-	# TODO
-	
-	return []
+N = 9                 # Minimum number of points.
+D = 100000            # 100 kilometers in meters.
+R = Constants.WGS84_a # Earth's mean radius in meters.
 
 # http://www.movable-type.co.uk/scripts/latlong.html#cross-track
 def cross_track_distance(start, finish, target):
-
-	# Earth's mean radius.
-	R = Constants.WGS84_a
 
 	# Geodesic from start to target.
 	g = Geodesic.WGS84.Inverse(start[0], start[1], target[0], target[1])
@@ -29,8 +25,18 @@ def cross_track_distance(start, finish, target):
 	b12 = e['azi1'] # Initial bearing from start to finish.
 
 	return abs(asin(sin(d13 / R) * sin(b13 - b12))) * R
-	
-	# TODO check against http://geo.javawa.nl/coordcalc/index_en.html calc #2
+
+def save(name, url, start, finish, points):
+	save.id += 1
+	with open(join('data', str(save.id) + '.json'), 'w') as file:
+		file.write(dumps({
+			'name': name,
+			'source': url,
+			'start': start,
+			'finish': finish,
+			'points': points
+		}))
+save.id = 0
 
 with open('sources.json') as file:
 	sources = loads(file.read())
@@ -43,12 +49,19 @@ for name, url in sources.iteritems():
 	with open(path) as file:
 		csv = reader(file)
 		csv.next() # Skip header row.
-		points = [row for row in csv]
-		for index, circle in enumerate(sharpshooter(points)):
-			with open(join('data', str(index) + '.json'), 'w') as file:
-				file.write(dumps({
-					'name': name,
-					'source': url,
-					'equator': circle['equator'],
-					'points': circle['points']
-				}))
+		points = []
+		for row in csv:
+			row[1] = float(row[1])
+			row[2] = float(row[2])
+			points.append(row)
+		last_point = len(points) - 1
+		for i in range(0, last_point - 1):
+			for j in range(i + 1, last_point):
+				start = points[i][1:]
+				finish = points[j][1:]
+				matches = []
+				for i, p in enumerate(points):
+					if cross_track_distance(start, finish, p[1:]) <= D:
+						matches.append(p)
+				if len(matches) >= N:
+					save(name, url, start, finish, matches)

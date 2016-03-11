@@ -1,3 +1,6 @@
+# TODO Check against calculation #2:
+# http://geo.javawa.nl/coordcalc/index_en.html
+
 from math import asin, sin
 
 from geographiclib.geodesic import Geodesic
